@@ -30,12 +30,12 @@ Symbol Reference:
 - '2': Invisible coin bock
 - 'D': Used block
 - 'S': Normal Brick Block
-- 'C': Coing Brick Block
-- 'U': Musrhoom Brick Block
+- 'C': Coin Brick Block
+- 'U': Mushroom Brick Block
 - 'L': 1 up Block
 - 'o': Coin
 - 't': Empty Pipe
-- 'T': Pipe with Piranaha Plant in it
+- 'T': Pipe with Piranha Plant in it
 - '<': Top left of empty pipe
 - '>': Top right of empty pipe
 - '[': Left of empty pipe

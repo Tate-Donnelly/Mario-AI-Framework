@@ -7,7 +7,7 @@ import engine.helper.MarioActions;
 public class Agent implements MarioAgent {
 	private boolean facing_right;
 	private boolean[] action = null;
-	
+	boolean shouldMarioJump=false;
 	
 	@Override
 	public void initialize(MarioForwardModel model, MarioTimer timer) {
@@ -32,6 +32,7 @@ public class Agent implements MarioAgent {
 	}
 	
 	private void agentRun(MarioForwardModel model){
+		checkForEnemies(model);
 		agentDirection();
 		agentSpeed();
 	}
@@ -51,9 +52,29 @@ public class Agent implements MarioAgent {
 	}
 	
 	private void agentJump(MarioForwardModel model){
-		boolean shouldMarioJump=true;
+		int[][] scene = model.getMarioSceneObservation();
 		if(model.mayMarioJump() && shouldMarioJump){
 			action[MarioActions.JUMP.getValue()]=true;
 		}
+	}
+	
+	private void checkForEnemies(MarioForwardModel model){
+		int[][] enemies = model.getMarioEnemiesObservation();
+		for (int i = 0; i > -6; i--) {
+			for (int j = 1; j < 6; j++) {
+				if(getCoords(j,i,enemies)!=0){
+					shouldMarioJump=true;
+				}
+			}
+		}
+		
+	}
+	
+	private int getCoords(int xCoords, int yCoords, int[][] scene) {
+		int realX = 8 + xCoords;
+		int realY = 8 + yCoords;
+		System.out.println("X: "+realX+" Y: "+realY);
+		
+		return scene[realX][realY];
 	}
 }
