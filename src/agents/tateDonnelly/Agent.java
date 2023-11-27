@@ -16,7 +16,7 @@ public class Agent implements MarioAgent {
 		action[MarioActions.RIGHT.getValue()] = true;
 		action[MarioActions.LEFT.getValue()] = false;
 		action[MarioActions.JUMP.getValue()] = false;
-		action[MarioActions.SPEED.getValue()] = true;
+		action[MarioActions.SPEED.getValue()] = false;
 	}
 	
 	@Override
@@ -32,13 +32,12 @@ public class Agent implements MarioAgent {
 	}
 	
 	private void agentRun(MarioForwardModel model){
-		checkForEnemies(model);
-		agentDirection();
+		//agentDirection();
 		agentSpeed();
 	}
 	
 	private void agentSpeed(){
-		action[MarioActions.SPEED.getValue()]=true;
+		action[MarioActions.SPEED.getValue()]=false;
 	}
 	
 	private void agentDirection(){
@@ -52,28 +51,55 @@ public class Agent implements MarioAgent {
 	}
 	
 	private void agentJump(MarioForwardModel model){
-		int[][] scene = model.getMarioSceneObservation();
-		if(model.mayMarioJump() && shouldMarioJump){
+		boolean canJump=model.mayMarioJump() && model.isMarioOnGround();
+		boolean jumpRestrictions=checkForEnemies(model) || shouldJumpScene(model) || isThereAGap(model);
+		if(canJump && jumpRestrictions){
 			action[MarioActions.JUMP.getValue()]=true;
+		} else if (model.isMarioOnGround()) {
+			action[MarioActions.JUMP.getValue()]=false;
 		}
 	}
 	
-	private void checkForEnemies(MarioForwardModel model){
+	private boolean checkForEnemies(MarioForwardModel model){
 		int[][] enemies = model.getMarioEnemiesObservation();
-		for (int i = 0; i > -6; i--) {
-			for (int j = 1; j < 6; j++) {
+		for (int i = 0; i > -4; i--) {
+			for (int j = 1; j < 4; j++) {
 				if(getCoords(j,i,enemies)!=0){
-					shouldMarioJump=true;
+					return true;
 				}
 			}
 		}
-		
+		return false;
+	}
+	
+	private boolean shouldJumpScene(MarioForwardModel model){
+		int[][] scene = model.getMarioSceneObservation();
+		for (int i = 0; i > -2; i--) {
+			for (int j = 1; j < 5; j++) {
+				int coord=getCoords(j,i,scene);
+				if(coord!=0){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	private boolean isThereAGap(MarioForwardModel model){
+		int[][] scene = model.getMarioSceneObservation();
+		for (int i = 1; i < 3; i++) {
+			for (int j = 2; j < 8; j++) {
+				if (getCoords(i, j, scene) != 0) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 	
 	private int getCoords(int xCoords, int yCoords, int[][] scene) {
 		int realX = 8 + xCoords;
 		int realY = 8 + yCoords;
-		System.out.println("X: "+realX+" Y: "+realY);
 		
 		return scene[realX][realY];
 	}
