@@ -86,7 +86,8 @@ public class Agent implements MarioAgent {
 	public String getAgentName() {
 		return "Tate's Agent";
 	}
-	
+
+	//I referenced michal's agent for this function
 	public int getCoords(int xCoords, int yCoords, int[][] scene) {
 		int realX = 8 + xCoords;
 		int realY = 8 + yCoords;
