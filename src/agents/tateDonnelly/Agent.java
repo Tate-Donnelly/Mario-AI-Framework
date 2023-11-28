@@ -1,5 +1,6 @@
 package agents.tateDonnelly;
 import agents.tateDonnelly.CustomNodes.*;
+import agents.tateDonnelly.StandardNodes.Inverter;
 import agents.tateDonnelly.StandardNodes.Node;
 import agents.tateDonnelly.StandardNodes.Selector;
 import agents.tateDonnelly.StandardNodes.Sequence;
@@ -65,7 +66,7 @@ public class Agent implements MarioAgent {
 		//Did Mario pass Q block?
 		PastQuestionBlockNode pastQuestionBlockNode=new PastQuestionBlockNode(this,model,scene,5);
 		RunTask runTask=new RunTask(this,false);
-		Sequence pastQBlockSeq=new Sequence(Arrays.asList(new Node[]{pastQuestionBlockNode, runTask}));
+		Sequence pastQBlockSeq=new Sequence(Arrays.asList(new Node[]{pastQuestionBlockNode, new Inverter(new IsEnemyNode(this,model,enemies,5)),runTask}));
 		
 		
 		List<Node> qBlockSelChildren= Arrays.asList(new Node[]{qBlockSeq,pastQBlockSeq});
