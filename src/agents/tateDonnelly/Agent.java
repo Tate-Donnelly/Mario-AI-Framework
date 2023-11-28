@@ -59,11 +59,20 @@ public class Agent implements MarioAgent {
 		//StarBlock
 		IsQuestionBlock isQuestionBlockNode =new IsQuestionBlock(this,model,scene);
 		QuestionBlockJumpTask questionBlockJumpTask =new QuestionBlockJumpTask(this,model);
-		List<Node> starBlockSeqChildren= Arrays.asList(new Node[]{isQuestionBlockNode, questionBlockJumpTask});
-		Sequence starBlockSeq=new Sequence(starBlockSeqChildren);
+		List<Node> qBlockSeqChildren= Arrays.asList(new Node[]{canAgentJump,isQuestionBlockNode, questionBlockJumpTask});
+		Sequence qBlockSeq=new Sequence(qBlockSeqChildren);
+		
+		//Did Mario pass Q block?
+		PastQuestionBlockNode pastQuestionBlockNode=new PastQuestionBlockNode(this,model,scene,5);
+		RunTask runTask=new RunTask(this,false);
+		Sequence pastQBlockSeq=new Sequence(Arrays.asList(new Node[]{pastQuestionBlockNode, runTask}));
+		
+		
+		List<Node> qBlockSelChildren= Arrays.asList(new Node[]{qBlockSeq,pastQBlockSeq});
+		Selector qBlockSelector=new Selector(qBlockSelChildren,false);
 		
 		RunTask agentRunRight=new RunTask(this,true);
-		List<Node> selectorChildren= Arrays.asList(new Node[]{jumpSequence,starBlockSeq,resetJumpSeq,agentRunRight});
+		List<Node> selectorChildren= Arrays.asList(new Node[]{jumpSequence,qBlockSelector,resetJumpSeq,agentRunRight});
 		behaviorTree=new Selector(selectorChildren,false);
 	}
 	

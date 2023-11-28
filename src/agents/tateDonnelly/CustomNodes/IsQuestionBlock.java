@@ -18,9 +18,10 @@ public class IsQuestionBlock extends Node {
 	
 	@Override
 	public NodeState Evaluate() {
-		for (int i = 0; i < 6; i++) {
-			int coord=agent.getCoords(1,i,scene);
-			if(coord==MarioForwardModel.OBS_QUESTION_BLOCK){
+		for (int j = 0; j > -5; j--) {
+			int coord = agent.getCoords(1, j, scene);
+			
+			if (coord == MarioForwardModel.OBS_QUESTION_BLOCK) {
 				return NodeState.SUCCESS;
 			}
 		}

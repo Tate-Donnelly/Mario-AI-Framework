@@ -21,11 +21,10 @@ public class IsEnemyNode extends Node {
 	
 	@Override
 	public NodeState Evaluate() {
-		for (int i = 0; i > -4; i--) {
-			for (int j = 1; j < distance; j++) {
-				if(agent.getCoords(j,i,enemies)!=0){
-					return NodeState.SUCCESS;
-				}
+		for (int j = 1; j < distance; j++) {
+			int coords=agent.getCoords(j,0,enemies);
+			if(coords>MarioForwardModel.OBS_ENEMY){
+				return NodeState.SUCCESS;
 			}
 		}
 		return NodeState.FAILURE;
