@@ -7,6 +7,8 @@ import engine.core.MarioForwardModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class ShouldJumpSelector extends Selector {
 	private Agent agent;
@@ -27,7 +29,11 @@ public class ShouldJumpSelector extends Selector {
 		IsGapNode isGapNode=new IsGapNode(agent,model,scene,2);
 		IsObstacleNode isObstacleNode=new IsObstacleNode(agent,model,scene,5);
 		IsEnemyNode isEnemyNode=new IsEnemyNode(agent,model,enemies,4);
-		children=Arrays.asList(new Node[]{isGapNode,isEnemyNode,isObstacleNode});
+		List<Node> nodes=Arrays.asList(new Node[]{isGapNode,isEnemyNode,isObstacleNode});
+		if(randomize){
+			Collections.shuffle(nodes);
+		}
+		children=nodes;
 		Evaluate();
 	}
 	

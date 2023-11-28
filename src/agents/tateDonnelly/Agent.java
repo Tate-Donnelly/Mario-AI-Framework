@@ -6,6 +6,7 @@ import agents.tateDonnelly.StandardNodes.Sequence;
 import agents.tateDonnelly.Tasks.JumpTask;
 import agents.tateDonnelly.Tasks.ResetJumpTask;
 import agents.tateDonnelly.Tasks.RunTask;
+import agents.tateDonnelly.Tasks.QuestionBlockJumpTask;
 import engine.core.MarioAgent;
 import engine.core.MarioForwardModel;
 import engine.core.MarioTimer;
@@ -55,9 +56,14 @@ public class Agent implements MarioAgent {
 		List<Node> jumpSeqChildren= Arrays.asList(new Node[]{canAgentJump,shouldJumpSelector,jumpTask});
 		Sequence jumpSequence=new Sequence(jumpSeqChildren);
 		
+		//StarBlock
+		IsQuestionBlock isQuestionBlockNode =new IsQuestionBlock(this,model,scene);
+		QuestionBlockJumpTask questionBlockJumpTask =new QuestionBlockJumpTask(this,model);
+		List<Node> starBlockSeqChildren= Arrays.asList(new Node[]{isQuestionBlockNode, questionBlockJumpTask});
+		Sequence starBlockSeq=new Sequence(starBlockSeqChildren);
 		
 		RunTask agentRunRight=new RunTask(this,true);
-		List<Node> selectorChildren= Arrays.asList(new Node[]{jumpSequence,resetJumpSeq,agentRunRight});
+		List<Node> selectorChildren= Arrays.asList(new Node[]{jumpSequence,starBlockSeq,resetJumpSeq,agentRunRight});
 		behaviorTree=new Selector(selectorChildren,false);
 	}
 	

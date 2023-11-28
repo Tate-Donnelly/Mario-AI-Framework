@@ -6,7 +6,7 @@ import agents.tateDonnelly.StandardNodes.NodeState;
 import java.util.List;
 
 public class Selector extends Node {
-	boolean randomize;
+	protected boolean randomize;
 	
 	public Selector(List<Node> children, boolean randomize)  {
 		super(children);
