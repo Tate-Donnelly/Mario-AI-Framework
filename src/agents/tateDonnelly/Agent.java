@@ -4,26 +4,61 @@ import engine.core.MarioForwardModel;
 import engine.core.MarioTimer;
 import engine.helper.MarioActions;
 
+import javax.swing.plaf.synth.SynthOptionPaneUI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Agent implements MarioAgent {
 	private boolean facing_right;
 	private boolean[] action = null;
-	boolean shouldMarioJump=false;
+	
+	private Node behaviorTree;
+	
 	
 	@Override
 	public void initialize(MarioForwardModel model, MarioTimer timer) {
 		action = new boolean[MarioActions.numberOfActions()];
 		facing_right=true;
-		action[MarioActions.RIGHT.getValue()] = true;
+		action[MarioActions.RIGHT.getValue()] = false;
 		action[MarioActions.LEFT.getValue()] = false;
 		action[MarioActions.JUMP.getValue()] = false;
 		action[MarioActions.SPEED.getValue()] = false;
+		action[MarioActions.DOWN.getValue()] = false;
+		SetTree(model);
 	}
 	
 	@Override
 	public boolean[] getActions(MarioForwardModel model, MarioTimer timer) {
-		agentRun(model);
-		agentJump(model);
+		SetTree(model);
+		behaviorTree.Evaluate();
 		return action;
+	}
+	
+	private void SetTree(MarioForwardModel model){
+		int[][] scene = model.getMarioSceneObservation();
+		int[][] enemies = model.getMarioEnemiesObservation();
+		
+		ShouldResetNode shouldResetJump=new ShouldResetNode(model);
+		ResetJumpTask resetJumpTask=new ResetJumpTask(this);
+		Sequence resetJumpSeq=new Sequence(Arrays.asList(new Node[]{shouldResetJump,resetJumpTask}));
+		
+		//Should agent jump
+		ShouldJumpSelector shouldJumpSelector=new ShouldJumpSelector(this,model,scene,enemies);
+		JumpTask jumpTask=new JumpTask(this,model);
+		CanJumpNode canAgentJump=new CanJumpNode(model);
+		List<Node> jumpSeqChildren= Arrays.asList(new Node[]{canAgentJump,shouldJumpSelector,jumpTask});
+		Sequence jumpSequence=new Sequence(jumpSeqChildren);
+		
+		
+		RunTask agentRunRight=new RunTask(this,true);
+		List<Node> selectorChildren= Arrays.asList(new Node[]{jumpSequence,resetJumpSeq,agentRunRight});
+		behaviorTree=new Selector(selectorChildren);
+	}
+	
+	public void setRun(boolean shouldRun, boolean faceRight){
+		action[MarioActions.RIGHT.getValue()]=shouldRun && faceRight;
+		action[MarioActions.LEFT.getValue()]=shouldRun && !faceRight;
 	}
 	
 	@Override
@@ -31,76 +66,14 @@ public class Agent implements MarioAgent {
 		return "Tate's Agent";
 	}
 	
-	private void agentRun(MarioForwardModel model){
-		//agentDirection();
-		agentSpeed();
-	}
-	
-	private void agentSpeed(){
-		action[MarioActions.SPEED.getValue()]=false;
-	}
-	
-	private void agentDirection(){
-		boolean shouldChangeDirections=false;
-		if(shouldChangeDirections){
-			facing_right=!facing_right;
-		}
-		
-		action[MarioActions.RIGHT.getValue()]=facing_right;
-		action[MarioActions.LEFT.getValue()]=!facing_right;
-	}
-	
-	private void agentJump(MarioForwardModel model){
-		boolean canJump=model.mayMarioJump() && model.isMarioOnGround();
-		boolean jumpRestrictions=checkForEnemies(model) || shouldJumpScene(model) || isThereAGap(model);
-		if(canJump && jumpRestrictions){
-			action[MarioActions.JUMP.getValue()]=true;
-		} else if (model.isMarioOnGround()) {
-			action[MarioActions.JUMP.getValue()]=false;
-		}
-	}
-	
-	private boolean checkForEnemies(MarioForwardModel model){
-		int[][] enemies = model.getMarioEnemiesObservation();
-		for (int i = 0; i > -4; i--) {
-			for (int j = 1; j < 4; j++) {
-				if(getCoords(j,i,enemies)!=0){
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
-	private boolean shouldJumpScene(MarioForwardModel model){
-		int[][] scene = model.getMarioSceneObservation();
-		for (int i = 0; i > -2; i--) {
-			for (int j = 1; j < 5; j++) {
-				int coord=getCoords(j,i,scene);
-				if(coord!=0){
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
-	private boolean isThereAGap(MarioForwardModel model){
-		int[][] scene = model.getMarioSceneObservation();
-		for (int i = 1; i < 3; i++) {
-			for (int j = 2; j < 8; j++) {
-				if (getCoords(i, j, scene) != 0) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-	
-	private int getCoords(int xCoords, int yCoords, int[][] scene) {
+	public int getCoords(int xCoords, int yCoords, int[][] scene) {
 		int realX = 8 + xCoords;
 		int realY = 8 + yCoords;
 		
 		return scene[realX][realY];
+	}
+	
+	public void setJump(boolean shouldJump) {
+		action[MarioActions.JUMP.getValue()]=shouldJump;
 	}
 }
