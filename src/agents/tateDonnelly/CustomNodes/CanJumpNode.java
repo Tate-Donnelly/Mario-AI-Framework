@@ -1,5 +1,7 @@
-package agents.tateDonnelly;
+package agents.tateDonnelly.CustomNodes;
 
+import agents.tateDonnelly.StandardNodes.Node;
+import agents.tateDonnelly.StandardNodes.NodeState;
 import engine.core.MarioForwardModel;
 
 public class CanJumpNode extends Node {

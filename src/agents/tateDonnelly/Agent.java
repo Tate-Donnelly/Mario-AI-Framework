@@ -1,11 +1,16 @@
 package agents.tateDonnelly;
+import agents.tateDonnelly.CustomNodes.*;
+import agents.tateDonnelly.StandardNodes.Node;
+import agents.tateDonnelly.StandardNodes.Selector;
+import agents.tateDonnelly.StandardNodes.Sequence;
+import agents.tateDonnelly.Tasks.JumpTask;
+import agents.tateDonnelly.Tasks.ResetJumpTask;
+import agents.tateDonnelly.Tasks.RunTask;
 import engine.core.MarioAgent;
 import engine.core.MarioForwardModel;
 import engine.core.MarioTimer;
 import engine.helper.MarioActions;
 
-import javax.swing.plaf.synth.SynthOptionPaneUI;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -53,7 +58,7 @@ public class Agent implements MarioAgent {
 		
 		RunTask agentRunRight=new RunTask(this,true);
 		List<Node> selectorChildren= Arrays.asList(new Node[]{jumpSequence,resetJumpSeq,agentRunRight});
-		behaviorTree=new Selector(selectorChildren);
+		behaviorTree=new Selector(selectorChildren,false);
 	}
 	
 	public void setRun(boolean shouldRun, boolean faceRight){

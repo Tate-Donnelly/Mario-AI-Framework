@@ -1,4 +1,4 @@
-package agents.tateDonnelly;
+package agents.tateDonnelly.StandardNodes;
 
 public enum NodeState {
 	SUCCESS,

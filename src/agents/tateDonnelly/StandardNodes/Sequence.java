@@ -1,8 +1,11 @@
-package agents.tateDonnelly;
+package agents.tateDonnelly.StandardNodes;
+
+import agents.tateDonnelly.StandardNodes.Node;
+import agents.tateDonnelly.StandardNodes.NodeState;
 
 import java.util.List;
 
-public class Sequence extends Node{
+public class Sequence extends Node {
 	public Sequence(List<Node> children)  {
 		super(children);
 	}

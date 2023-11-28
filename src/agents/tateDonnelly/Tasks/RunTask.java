@@ -1,10 +1,10 @@
-package agents.tateDonnelly;
+package agents.tateDonnelly.Tasks;
 
-import engine.core.MarioForwardModel;
+import agents.tateDonnelly.Agent;
+import agents.tateDonnelly.StandardNodes.Node;
+import agents.tateDonnelly.StandardNodes.NodeState;
 
-import java.util.List;
-
-public class RunTask extends Node{
+public class RunTask extends Node {
 	
 	private Agent agent;
 	private boolean faceRight;
@@ -18,7 +18,6 @@ public class RunTask extends Node{
 	@Override
 	public NodeState Evaluate() {
 		agent.setRun(true,faceRight);
-		//agent.setJump(false);
 		return NodeState.SUCCESS;
 	}
 }

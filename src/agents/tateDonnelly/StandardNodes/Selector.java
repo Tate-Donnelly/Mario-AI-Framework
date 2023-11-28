@@ -1,10 +1,16 @@
-package agents.tateDonnelly;
+package agents.tateDonnelly.StandardNodes;
+
+import agents.tateDonnelly.StandardNodes.Node;
+import agents.tateDonnelly.StandardNodes.NodeState;
 
 import java.util.List;
 
-public class Selector extends Node{
-	public Selector(List<Node> children)  {
+public class Selector extends Node {
+	boolean randomize;
+	
+	public Selector(List<Node> children, boolean randomize)  {
 		super(children);
+		this.randomize=randomize;
 	}
 	
 	@Override
